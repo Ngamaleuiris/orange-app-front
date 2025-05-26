@@ -20,26 +20,35 @@ namespace AccessTransmitAPI.Controllers
         {
             try
             {
+                Console.WriteLine("Tentative de récupération des utilisateurs Keycloak...");
                 var keycloakUsers = await _keycloakService.GetUsersAsync();
+                
                 if (keycloakUsers == null)
-                    return StatusCode(500, "Failed to retrieve users.");
+                {
+                    Console.WriteLine("Échec de la récupération des utilisateurs : GetUsersAsync a retourné null");
+                    return StatusCode(500, new { message = "Échec de la récupération des utilisateurs. Le service Keycloak n'a pas retourné de données." });
+                }
+
+                Console.WriteLine($"Nombre d'utilisateurs récupérés : {keycloakUsers.Count}");
 
                 // Transformation des utilisateurs Keycloak en modèle de réponse
                 var users = keycloakUsers.Select(u => new UserResponse
                 {
-                    Id = u.Id,
-                    Username = u.Username,
-                    Email = u.Email,
+                    Id = u.Id ?? "inconnu",
+                    Username = u.Username ?? "inconnu",
+                    Email = u.Email ?? "non-renseigné",
                     Enabled = u.Enabled ?? false,
-                    // Vous devrez peut-être ajouter une méthode pour récupérer les groupes
-                    // Groups = await _keycloakService.GetUserGroupsAsync(u.Id)
+                    Groups = new List<string>() // Initialisation d'une liste vide pour les groupes
                 }).ToList();
 
+                Console.WriteLine("Transformation des utilisateurs terminée avec succès");
                 return Ok(users);
             }
             catch (Exception ex)
             {
-                return StatusCode(500, $"An error occurred: {ex.Message}");
+                Console.WriteLine($"Erreur lors de la récupération des utilisateurs : {ex.Message}");
+                Console.WriteLine($"StackTrace : {ex.StackTrace}");
+                return StatusCode(500, new { message = $"Une erreur est survenue lors de la récupération des utilisateurs : {ex.Message}" });
             }
         }
 
@@ -181,9 +190,9 @@ namespace AccessTransmitAPI.Controllers
 
     public class UserResponse
     {
-        public string Id { get; set; }
-        public string Username { get; set; }
-        public string Email { get; set; }
+        public required string Id { get; set; }
+        public required string Username { get; set; }
+        public required string Email { get; set; }
         public bool Enabled { get; set; }
         public List<string> Groups { get; set; } = new List<string>();
         // Ajoutez d'autres propriétés si nécessaire
