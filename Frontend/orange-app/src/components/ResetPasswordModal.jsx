@@ -1,53 +1,32 @@
 import React, { useState } from 'react';
 
-const EditUserModal = ({ user, onClose, onUpdate, allUsers }) => {
-    const [formData, setFormData] = useState({
-        role: user["Role"] || ''
-    });
+const ResetPasswordModal = ({ user, onClose, onReset }) => {
+    const [newPassword, setNewPassword] = useState('');
+    const [confirmPassword, setConfirmPassword] = useState('');
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
     const [loading, setLoading] = useState(false);
-
-    // Extraire les rôles uniques de tous les utilisateurs
-    const roles = [...new Set(allUsers.map(user => user["Role"]))].filter(Boolean);
-
-    const handleChange = (e) => {
-        const { value } = e.target;
-        setFormData({ role: value });
-        // Réinitialiser les messages d'erreur/succès lors d'un changement
-        setError('');
-        setSuccess('');
-    };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError('');
         setSuccess('');
+
+        if (newPassword !== confirmPassword) {
+            setError('Les mots de passe ne correspondent pas');
+            return;
+        }
+
         setLoading(true);
-
         try {
-            // Vérifier que le rôle a été sélectionné
-            if (!formData.role) {
-                setError('Veuillez sélectionner un rôle');
-                setLoading(false);
-                return;
-            }
-
-            // Vérifier que le rôle est différent du rôle actuel
-            if (formData.role === user["Role"]) {
-                setError('Le nouveau rôle doit être différent du rôle actuel');
-                setLoading(false);
-                return;
-            }
-
-            await onUpdate(user.id, formData);
-            setSuccess('Rôle modifié avec succès');
+            await onReset(user.id, newPassword);
+            setSuccess('Mot de passe modifié avec succès');
             setTimeout(() => {
                 onClose();
             }, 1500);
         } catch (error) {
-            console.error('Erreur détaillée:', error);
-            setError(error.response?.data?.message || 'Impossible de modifier le rôle');
+            setError('Impossible de modifier le mot de passe');
+            console.error(error);
         } finally {
             setLoading(false);
         }
@@ -56,7 +35,7 @@ const EditUserModal = ({ user, onClose, onUpdate, allUsers }) => {
     return (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
             <div className="bg-white p-6 rounded-lg w-full max-w-md">
-                <h2 className="text-xl font-bold mb-4">Modifier le rôle de l'utilisateur</h2>
+                <h2 className="text-xl font-bold mb-4">Réinitialiser le mot de passe</h2>
                 <p className="mb-4 text-gray-600">Utilisateur : {user["User Name"]}</p>
                 
                 {error && (
@@ -74,22 +53,28 @@ const EditUserModal = ({ user, onClose, onUpdate, allUsers }) => {
                 <form onSubmit={handleSubmit}>
                     <div className="mb-4">
                         <label className="block text-gray-700 text-sm font-bold mb-2">
-                            Rôle actuel : {user["Role"]}
+                            Nouveau mot de passe
                         </label>
-                        <select
-                            name="role"
-                            value={formData.role}
-                            onChange={handleChange}
-                            className="w-full px-3 py-2 border rounded-lg bg-white"
+                        <input
+                            type="password"
+                            value={newPassword}
+                            onChange={(e) => setNewPassword(e.target.value)}
+                            className="w-full px-3 py-2 border rounded-lg"
                             required
-                        >
-                            <option value="">Sélectionner un nouveau rôle</option>
-                            {roles.map((role) => (
-                                <option key={role} value={role}>
-                                    {role}
-                                </option>
-                            ))}
-                        </select>
+                        />
+                    </div>
+
+                    <div className="mb-4">
+                        <label className="block text-gray-700 text-sm font-bold mb-2">
+                            Confirmer le mot de passe
+                        </label>
+                        <input
+                            type="password"
+                            value={confirmPassword}
+                            onChange={(e) => setConfirmPassword(e.target.value)}
+                            className="w-full px-3 py-2 border rounded-lg"
+                            required
+                        />
                     </div>
 
                     <div className="flex justify-end gap-2">
@@ -114,4 +99,4 @@ const EditUserModal = ({ user, onClose, onUpdate, allUsers }) => {
     );
 };
 
-export default EditUserModal; 
+export default ResetPasswordModal; 

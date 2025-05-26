@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import backgroundImage from "../assets/img-orange.png";
 import logoImage from "../assets/logo orange.png";
@@ -7,9 +7,19 @@ import authService from "../services/authService";
 const LoginPage = () => {
   const [cuid, setCuid] = useState("");
   const [password, setPassword] = useState("");
+  const [rememberMe, setRememberMe] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+
+  // Au chargement du composant, vérifier si un CUID est stocké
+  useEffect(() => {
+    const rememberedCuid = localStorage.getItem("rememberedCuid");
+    if (rememberedCuid) {
+      setCuid(rememberedCuid);
+      setRememberMe(true);
+    }
+  }, []);
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -19,6 +29,13 @@ const LoginPage = () => {
     try {
       const response = await authService.login(cuid, password);
       if (response) {
+        // Si "Remember me" est coché, stocker le CUID dans le localStorage
+        if (rememberMe) {
+          localStorage.setItem("rememberedCuid", cuid);
+        } else {
+          // Sinon, supprimer le CUID précédemment stocké
+          localStorage.removeItem("rememberedCuid");
+        }
         navigate("/dashboard");
       }
     } catch (error) {
@@ -84,8 +101,14 @@ const LoginPage = () => {
 
             <div className="flex justify-between items-center mb-6">
               <div>
-                <input type="checkbox" id="remember" className="mr-2" />
-                <label htmlFor="remember" className="text-black text-sm">Remember</label>
+                <input 
+                  type="checkbox" 
+                  id="remember" 
+                  className="mr-2" 
+                  checked={rememberMe}
+                  onChange={(e) => setRememberMe(e.target.checked)}
+                />
+                <label htmlFor="remember" className="text-black text-sm">Remember me</label>
               </div>
               <a href="#" className="text-sm text-orange-600 hover:underline">
                 Forgot Password?

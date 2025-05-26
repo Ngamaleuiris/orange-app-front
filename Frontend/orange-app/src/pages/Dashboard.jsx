@@ -15,58 +15,47 @@ const Dashboard = () => {
     { name: "NFMP", path: "/nfmp", image: imgNfmp },
     { name: "IMONITOR", path: "/imonitor", image: imgImonitor },
     { name: "KEYCLOAK", path: "/keycloak", image: imgKeycloak },
-    { name: "NOMAD", path: "/nomad", image: imgNomad }
+    { name: "NOMAD", path: "/nomad", image: imgNomad },
+    { name: "KEYCLOAK TOOL", path: "/keycloaktool", image: imgKeycloak }
   ];
 
   return (
-    <div className="flex flex-col min-h-screen bg-gray-100">
+    <div className="min-h-screen bg-gradient-to-br from-orange-50 via-amber-50 to-yellow-50">
       <Header />
 
-      <div className="flex flex-col items-center justify-center mt-12">
-        <h1 className="text-3xl font-bold text-gray-800 mb-6">Transmission Tools</h1>
+      <div className="container mx-auto px-4 py-12">
+        <div className="text-center mb-16">
+          <h1 className="text-4xl font-extrabold text-orange-800 mb-4">TRANSMISSION TOOLS</h1>
+          <p className="text-orange-600 text-lg">Centralized management of your tools.</p>
+        </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
           {outils.map((outil, index) => (
             <button
               key={index}
-              className="bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition flex flex-col items-center"
+              className="group bg-white/90 p-8 rounded-xl shadow-md hover:shadow-lg transition-all duration-300 flex flex-col items-center border border-orange-100 hover:border-orange-200 hover:scale-105"
               onClick={() => navigate(outil.path)}
             >
-              <img
-                src={outil.image}
-                alt={outil.name}
-                className="w-16 h-16 mb-4"
-              />
-              <span className="text-lg font-semibold text-gray-800">{outil.name}</span>
+              <div className="mb-6 transform group-hover:scale-110 transition-transform duration-300">
+                <img
+                  src={outil.image}
+                  alt={outil.name}
+                  className="w-20 h-20 object-contain"
+                />
+              </div>
+              <span className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-orange-600 to-amber-600 group-hover:from-orange-500 group-hover:to-amber-500 uppercase tracking-tight">{outil.name}</span>
             </button>
           ))}
         </div>
 
-        {/* Bouton KEYCLOAK TOOL */}
-        <div className="mt-8">
-          <div className="flex flex-col items-center">
-            <div className="bg-white p-4 rounded-lg shadow-lg mb-4 hover:shadow-xl transition-shadow duration-300">
-              <img
-                src={imgKeycloak}
-                alt="KEYCLOAK TOOL"
-                className="w-32 h-32 object-contain"
-              />
-            </div>
-            <button
-              className="bg-blue-600 text-white font-bold py-3 px-6 rounded-lg shadow-md hover:bg-blue-700 transition duration-300 transform hover:scale-105"
-              onClick={() => navigate("/keycloaktool")}
-            >
-              KEYCLOAK TOOL
-            </button>
-          </div>
+        <div className="text-center mt-12">
+          <button
+            className="text-orange-600 hover:text-orange-700 font-medium py-3 px-8 rounded-xl hover:bg-orange-50 transition-all duration-300"
+            onClick={() => navigate("/")}
+          >
+            Back to home
+          </button>
         </div>
-
-        <button
-          className="mt-12 px-6 py-3 bg-gray-700 text-white rounded-lg hover:bg-gray-800 transition"
-          onClick={() => navigate("/")}
-        >
-          Back to home
-        </button>
       </div>
     </div>
   );

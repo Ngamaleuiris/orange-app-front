@@ -1,77 +1,30 @@
 import React, { useState, useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import Header from "../components/Header";
+import axios from "axios";
 import backgroundImage from "../assets/img-keycloak.png";
 
-const ModifyUserkeycloak = () => {
+const ModifyUserKeycloak = () => {
   const navigate = useNavigate();
-  const [searchUsername, setSearchUsername] = useState("");
-  const [user, setUser] = useState({
-    id: "",
-    username: "",
-    firstName: "",
-    lastName: "",
-    email: "",
-    enabled: true
-  });
-  const [emailError, setEmailError] = useState("");
+  const [users, setUsers] = useState([]);
+  const [selectedUser, setSelectedUser] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [emailError, setEmailError] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
 
-  const searchUser = async (e) => {
-    e.preventDefault();
+  useEffect(() => {
+    fetchUsers();
+  }, []);
+
+  const fetchUsers = async () => {
     setLoading(true);
-    setError("");
-    
     try {
-      // Nouvelle approche : chercher d'abord tous les utilisateurs puis filtrer
-      const response = await fetch('http://localhost:5254/api/Users', {
-        method: 'GET',
-        headers: {
-          'Accept': 'application/json'
-        }
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to fetch users');
-      }
-
-      const users = await response.json();
-      console.log("All users:", users);
-
-      // Recherche de l'utilisateur par username
-      const foundUser = users.find(u => u.username.toLowerCase() === searchUsername.toLowerCase());
-      
-      if (!foundUser) {
-        throw new Error(`No user found with username: ${searchUsername}`);
-      }
-
-      console.log("Found user:", foundUser);
-
-      // Mise à jour de l'état avec les informations trouvées
-      setUser({
-        id: foundUser.id,
-        username: foundUser.username,
-        firstName: foundUser.firstName || "",
-        lastName: foundUser.lastName || "",
-        email: foundUser.email || "",
-        enabled: foundUser.enabled
-      });
-
-      setError("");
-
+      const response = await axios.get('http://localhost:5254/api/users');
+      setUsers(response.data);
     } catch (error) {
-      console.error("Search error:", error);
-      setError(error.message);
-      // Réinitialisation de l'utilisateur en cas d'erreur
-      setUser({
-        id: "",
-        username: "",
-        firstName: "",
-        lastName: "",
-        email: "",
-        enabled: true
-      });
+      console.error("Erreur lors de la récupération des utilisateurs:", error);
+      setError("Erreur lors de la récupération des utilisateurs");
     } finally {
       setLoading(false);
     }
@@ -82,162 +35,219 @@ const ModifyUserkeycloak = () => {
     return regex.test(email);
   };
 
+  const handleUserSelect = (user) => {
+    setSelectedUser({
+      id: user.id,
+      username: user.username,
+      firstName: user.firstName || "",
+      lastName: user.lastName || "",
+      email: user.email || "",
+      enabled: user.enabled
+    });
+    setEmailError("");
+    setError("");
+    setSuccessMessage("");
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!validateEmail(user.email)) {
-      setEmailError("Email must be in format: firstname.lastname@orange.com");
+    
+    if (!validateEmail(selectedUser.email)) {
+      setEmailError("L'email doit être au format: prenom.nom@orange.com");
       return;
     }
 
     try {
-      const response = await fetch(`http://localhost:5254/api/Users/${user.id}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          "Accept": "application/json"
-        },
-        body: JSON.stringify({
-          firstName: user.firstName,
-          lastName: user.lastName,
-          email: user.email,
-          enabled: user.enabled
-        })
-      });
+      const response = await axios.put(
+        `http://localhost:5254/api/users/${selectedUser.id}`,
+        {
+          firstName: selectedUser.firstName,
+          lastName: selectedUser.lastName,
+          email: selectedUser.email,
+          enabled: selectedUser.enabled
+        }
+      );
 
-      if (response.ok) {
-        const result = await response.json();
-        alert(result.message);
-        navigate(-1);
-      } else {
-        const errorData = await response.json();
-        setError(`Error modifying user: ${errorData.message || 'Unknown error'}`);
+      if (response.status === 200) {
+        setSuccessMessage("Utilisateur modifié avec succès");
+        fetchUsers(); // Rafraîchir la liste des utilisateurs
       }
     } catch (error) {
-      console.error("Error modifying user:", error);
-      setError("Network or server error occurred");
+      console.error("Erreur lors de la modification:", error);
+      setError(`Erreur lors de la modification: ${error.message}`);
     }
   };
 
   return (
-    <div className="flex flex-col min-h-screen">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-orange-50 relative overflow-hidden">
       <Header />
-      <div className="flex flex-grow">
-        <div className="w-1/4 bg-cover bg-center bg-no-repeat"
-          style={{ backgroundImage: `url(${backgroundImage})`, backgroundSize: "80%" }}
-        />
-
-        <div className="w-2/4 flex flex-col items-center justify-center">
-          <h1 className="text-2xl font-bold mb-4">Edit User</h1>
-          
-          {/* Formulaire de recherche */}
-          <form onSubmit={searchUser} className="bg-white p-6 rounded shadow-md w-80 mb-4">
-            <div className="mb-4">
-              <label className="block text-gray-700">Search by Username</label>
-              <input
-                type="text"
-                value={searchUsername}
-                onChange={(e) => setSearchUsername(e.target.value)}
-                className="border rounded w-full p-2"
-                required
-              />
-            </div>
-            <button 
-              type="submit"
-              disabled={loading}
-              className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+      
+      <div className="container mx-auto px-4 py-8 relative z-10">
+        <div className="max-w-7xl mx-auto">
+          <div className="flex justify-between items-center mb-8">
+            <h1 className="text-3xl font-bold text-gray-800">Modifier un utilisateur Keycloak</h1>
+            <button
+              onClick={() => navigate(-1)}  // Modification ici pour utiliser l'historique de navigation
+              className="px-4 py-2 bg-orange-600 text-white rounded-md hover:bg-orange-700 transition-colors"
             >
-              {loading ? "Searching..." : "Search User"}
+              Retour
             </button>
-          </form>
+          </div>
+          
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            {/* Liste des utilisateurs */}
+            <div className="bg-white rounded-lg shadow-lg p-6">
+              <h2 className="text-xl font-semibold text-gray-700 mb-4">Liste des utilisateurs</h2>
+              {loading ? (
+                <p className="text-gray-600">Chargement des utilisateurs...</p>
+              ) : error ? (
+                <p className="text-red-600">{error}</p>
+              ) : (
+                <div className="space-y-2 max-h-[600px] overflow-y-auto">
+                  {users.map((user) => (
+                    <div
+                      key={user.id}
+                      onClick={() => handleUserSelect(user)}
+                      className={`p-4 rounded-lg cursor-pointer transition-colors ${
+                        selectedUser?.id === user.id
+                          ? "bg-orange-100 border-2 border-orange-500"
+                          : "bg-gray-50 hover:bg-gray-100"
+                      }`}
+                    >
+                      <div className="font-medium text-gray-800">{user.username}</div>
+                      <div className="text-sm text-gray-600">{user.email}</div>
+                      <div className="text-sm text-gray-500">
+                        {user.firstName} {user.lastName}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
 
-          {error && <div className="text-red-500 mb-4">{error}</div>}
+            {/* Formulaire de modification */}
+            <div className="bg-white rounded-lg shadow-lg p-6">
+              {selectedUser ? (
+                <form onSubmit={handleSubmit}>
+                  <h2 className="text-xl font-semibold text-gray-700 mb-6">Modifier l'utilisateur</h2>
+                  
+                  {successMessage && (
+                    <div className="mb-4 p-3 bg-green-100 text-green-700 rounded-lg">
+                      {successMessage}
+                    </div>
+                  )}
+                  
+                  {error && (
+                    <div className="mb-4 p-3 bg-red-100 text-red-700 rounded-lg">
+                      {error}
+                    </div>
+                  )}
 
-          {user.id && (
-            <form onSubmit={handleSubmit} className="bg-white p-6 rounded shadow-md w-80">
-              <div className="mb-4">
-                <label className="block text-gray-700">First Name</label>
-                <input
-                  type="text"
-                  value={user.firstName}
-                  onChange={(e) => setUser({ ...user, firstName: e.target.value })}
-                  className="border rounded w-full p-2"
-                  required
-                />
-              </div>
+                  <div className="mb-6">
+                    <label className="block text-gray-600 text-sm font-medium mb-2">Nom d'utilisateur</label>
+                    <input
+                      type="text"
+                      value={selectedUser.username}
+                      disabled
+                      className="w-full px-4 py-2 bg-gray-100 border border-gray-200 rounded-md cursor-not-allowed"
+                    />
+                  </div>
 
-              <div className="mb-4">
-                <label className="block text-gray-700">Last Name</label>
-                <input
-                  type="text"
-                  value={user.lastName}
-                  onChange={(e) => setUser({ ...user, lastName: e.target.value })}
-                  className="border rounded w-full p-2"
-                  required
-                />
-              </div>
+                  <div className="mb-6">
+                    <label className="block text-gray-600 text-sm font-medium mb-2">Prénom</label>
+                    <input
+                      type="text"
+                      value={selectedUser.firstName}
+                      onChange={(e) => setSelectedUser({ ...selectedUser, firstName: e.target.value })}
+                      className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                      required
+                    />
+                  </div>
 
-              <div className="mb-4">
-                <label className="block text-gray-700">E-mail</label>
-                <input
-                  type="email"
-                  value={user.email}
-                  onChange={(e) => {
-                    setUser({ ...user, email: e.target.value });
-                    if (!validateEmail(e.target.value)) {
-                      setEmailError("Email must be in format: firstname.lastname@orange.com");
-                    } else {
-                      setEmailError("");
-                    }
-                  }}
-                  className={`border rounded w-full p-2 ${emailError ? 'border-red-500' : ''}`}
-                  placeholder="firstname.lastname@orange.com"
-                  required
-                />
-                {emailError && <p className="text-red-500 text-sm mt-1">{emailError}</p>}
-              </div>
+                  <div className="mb-6">
+                    <label className="block text-gray-600 text-sm font-medium mb-2">Nom</label>
+                    <input
+                      type="text"
+                      value={selectedUser.lastName}
+                      onChange={(e) => setSelectedUser({ ...selectedUser, lastName: e.target.value })}
+                      className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                      required
+                    />
+                  </div>
 
-              <div className="mb-4">
-                <label className="block text-gray-700">
-                  <input
-                    type="checkbox"
-                    checked={user.enabled}
-                    onChange={(e) => setUser({ ...user, enabled: e.target.checked })}
-                    className="mr-2"
-                  />
-                  Enable User
-                </label>
-              </div>
+                  <div className="mb-6">
+                    <label className="block text-gray-600 text-sm font-medium mb-2">E-mail</label>
+                    <input
+                      type="email"
+                      value={selectedUser.email}
+                      onChange={(e) => {
+                        setSelectedUser({ ...selectedUser, email: e.target.value });
+                        setEmailError(
+                          !validateEmail(e.target.value) 
+                            ? "L'email doit être au format: prenom.nom@orange.com" 
+                            : ""
+                        );
+                      }}
+                      className={`w-full px-4 py-2 border ${
+                        emailError ? 'border-red-500' : 'border-gray-300'
+                      } rounded-md focus:outline-none focus:ring-2 ${
+                        emailError ? 'focus:ring-red-500' : 'focus:ring-orange-500'
+                      } focus:border-transparent`}
+                      placeholder="prenom.nom@orange.com"
+                      required
+                    />
+                    {emailError && <p className="mt-1 text-sm text-red-600">{emailError}</p>}
+                  </div>
 
-              <div className="mb-4">
-                <label className="block text-gray-700">Username</label>
-                <input
-                  type="text"
-                  value={user.username}
-                  disabled
-                  className="border rounded w-full p-2 bg-gray-100"
-                />
-              </div>
+                  <div className="mb-6 flex items-center">
+                    <input
+                      type="checkbox"
+                      checked={selectedUser.enabled}
+                      onChange={(e) => setSelectedUser({ ...selectedUser, enabled: e.target.checked })}
+                      className="h-4 w-4 text-orange-600 focus:ring-orange-500 border-gray-300 rounded"
+                      id="enabled-checkbox"
+                    />
+                    <label htmlFor="enabled-checkbox" className="ml-2 block text-gray-600 text-sm">
+                      Activer l'utilisateur
+                    </label>
+                  </div>
 
-              <button type="submit" className="bg-orange-500 text-white px-4 py-2 rounded hover:bg-orange-600">
-                Save changes
-              </button>
-            </form>
-          )}
-
-          <button 
-            onClick={() => navigate(-1)} 
-            className="mt-4 text-orange-500 hover:text-orange-600"
-          >
-            Back
-          </button>
+                  <div className="flex justify-end space-x-4">
+                    <button
+                      type="button"
+                      onClick={() => navigate(-1)}
+                      className="px-6 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 transition-colors"
+                    >
+                      Annuler
+                    </button>
+                    <button
+                      type="submit"
+                      className="px-6 py-2 bg-orange-600 text-white rounded-md hover:bg-orange-700 transition-colors"
+                    >
+                      Enregistrer
+                    </button>
+                  </div>
+                </form>
+              ) : (
+                <div className="text-center text-gray-600 py-8">
+                  Sélectionnez un utilisateur dans la liste pour le modifier
+                </div>
+              )}
+            </div>
+          </div>
         </div>
+      </div>
 
-        <div className="w-1/4 bg-cover bg-center bg-no-repeat"
-          style={{ backgroundImage: `url(${backgroundImage})`, backgroundSize: "80%" }}
+      {/* Image de fond */}
+      <div className="absolute inset-0 z-0 opacity-5">
+        <img
+          src={backgroundImage}
+          alt="Background"
+          className="w-full h-full object-cover"
         />
       </div>
     </div>
   );
 };
 
-export default ModifyUserkeycloak;
+export default ModifyUserKeycloak;

@@ -1,36 +1,46 @@
-import React from "react"; 
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import React from "react";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import LoginPage from "./pages/LoginPage";
-import RegisterPage from "./pages/RegisterPage"; // Import de la page d'inscription
+import RegisterPage from "./pages/RegisterPage";
 import Dashboard from "./pages/Dashboard";
-import CreateUserNce from "./pages/CreateUserNce.jsx";
-import CreateUserNfmp from "./pages/CreateUserNfmp.jsx";
-import CreateUseriMonitor from "./pages/CreateUseriMonitor.jsx";
-import CreateUserKeycloak from "./pages/CreateUserKeycloak.jsx";
-import CreateUserKeycloakT from "./pages/CreateUserKeycloakT.jsx";
-import ModifyUserNce from "./pages/ModifyUserNce.jsx";
-import ModifyUserNfmp from "./pages/ModifyUserNfmp.jsx";
-import ModifyUserkeycloak from "./pages/ModifyUserKeycloak.jsx";
-import ModifyUseriMonitor from "./pages/ModifyUseriMonitor.jsx";
-import NCEPage from "./pages/NCEPage";  
-import NFMPPage from "./pages/NFMPPage"; 
-import IMonitorPage from "./pages/IMonitorPage"; 
-import DeleteUserPage  from "./pages/DeleteUserPage"; 
-import SuspendUserPage from "./pages/SuspendUserPage.jsx"; 
-import KEYCLOAKPage from "./pages/KEYCLOAKPage.jsx"; 
-import UsersPage from "./pages/UsersPage.jsx";
-import KeycloakTool from "./pages/KeycloakTool.jsx";
+import CreateUserNce from "./pages/CreateUserNce";
+import CreateUserNfmp from "./pages/CreateUserNfmp";
+import CreateUseriMonitor from "./pages/CreateUseriMonitor";
+import CreateUserKeycloak from "./pages/CreateUserKeycloak";
+import ModifyUserNce from "./pages/ModifyUserNce";
+import ModifyUserNfmp from "./pages/ModifyUserNfmp";
+import ModifyUserkeycloak from "./pages/ModifyUserKeycloak";
+import ModifyUseriMonitor from "./pages/ModifyUseriMonitor";
+import NCEPage from "./pages/NCEPage";
+import NFMPPage from "./pages/NFMPPage";
+import IMonitorPage from "./pages/IMonitorPage";
+import NomadPage from "./pages/NomadPage";
+import DeleteUserPage from "./pages/DeleteUserPage";
+import SuspendUserPage from "./pages/SuspendUserPage";
+import KEYCLOAKPage from "./pages/KEYCLOAKPage";
+import UsersPage from "./pages/UsersPage";
+import KeycloakTool from "./pages/KeycloakTool";
+import SuspendUserKeycloak from './pages/SuspendUserKeycloak';
+import DeleteUserKeycloak from './pages/DeleteUserKeycloak';
+import NCEUserManagement from "./pages/NCEUserManagement";
 
 function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<LoginPage />} />
+        {/* Routes d'authentification */}
+        <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
+
+        {/* Redirection par défaut */}
+        <Route path="/" element={<Navigate to="/login" replace />} />
+
+        {/* Routes de l'application */}
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/nce" element={<NCEPage />} />
         <Route path="/nfmp" element={<NFMPPage />} />
         <Route path="/imonitor" element={<IMonitorPage />} />
+        <Route path="/nomad" element={<NomadPage />} />
         <Route path="/keycloak" element={<KEYCLOAKPage />} />
         <Route path="/create-nceuser/:toolName" element={<CreateUserNce />} />
         <Route path="/create-nfmpuser/:toolName" element={<CreateUserNfmp />} />
@@ -44,7 +54,10 @@ function App() {
         <Route path="/create-keycloakuser/:toolName" element={<CreateUserKeycloak />} />
         <Route path="/userspage" element={<UsersPage />} />
         <Route path="/keycloaktool" element={<KeycloakTool />} />
-        <Route path="/create-keycloakuserT" element={<CreateUserKeycloakT />} />
+        <Route path="/suspend-keycloakuser" element={<SuspendUserKeycloak />} />
+        <Route path="/delete-keycloakuser" element={<DeleteUserKeycloak />} />
+        <Route path="/support" element={<div>Page de support</div>} />
+        <Route path="/nce-users" element={<NCEUserManagement />} />
       </Routes>
     </Router>
   );
