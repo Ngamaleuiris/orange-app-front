@@ -25,7 +25,7 @@ public class UserIMONITORImportController : ControllerBase
     public async Task<IActionResult> UploadExcel(IFormFile file)
     {
         if (file == null || file.Length == 0)
-            return BadRequest("Aucun fichier n’a été uploadé.");
+            return BadRequest("Aucun fichier n'a été uploadé.");
 
         if (!Path.GetExtension(file.FileName).Equals(".xlsx", StringComparison.OrdinalIgnoreCase))
             return BadRequest("Format invalide. Veuillez envoyer un fichier .xlsx");
@@ -39,7 +39,7 @@ public class UserIMONITORImportController : ControllerBase
             var users = _excelService.ParseIMONITORExcelToUsers(stream);
 
             if (users == null || users.Count == 0)
-                return BadRequest("Aucun utilisateur n’a été détecté dans le fichier. Vérifiez les en-têtes de colonnes.");
+                return BadRequest("Aucun utilisateur n'a été détecté dans le fichier. Vérifiez les en-têtes de colonnes.");
 
             _context.UserIMONITOR.AddRange(users);
             await _context.SaveChangesAsync();
@@ -104,6 +104,7 @@ public class UserIMONITORImportController : ControllerBase
             user.IMONITORUserName = updatedUser.IMONITORUserName;
             user.imonitorId = updatedUser.imonitorId;
             user.Type = updatedUser.Type;
+            user.IsSuspended = updatedUser.IsSuspended;
 
             await _context.SaveChangesAsync();
             return Ok(new { message = "Utilisateur mis à jour avec succès" });
@@ -118,7 +119,8 @@ public class UserIMONITORImportController : ControllerBase
             if (user == null)
                 return NotFound($"Aucun utilisateur trouvé avec l'ID {id}");
 
-            user.Type = "Suspended"; // ou "Inactif", selon ta logique
+            user.IsSuspended = true;
+            user.Type = "Suspended"; // Garder la compatibilité avec l'ancien système
             await _context.SaveChangesAsync();
 
             return Ok(new { message = "Utilisateur suspendu avec succès" });
@@ -139,5 +141,24 @@ public class UserIMONITORImportController : ControllerBase
             return Ok(new { message = "Utilisateur supprimé avec succès" });
     }
 
+
+    // PUT: api/UserIMONITORImport/{id}/password (mettre à jour le mot de passe d'un utilisateur)
+    [HttpPut("{id}/password")]
+    public async Task<IActionResult> UpdatePassword(int id, [FromBody] PasswordUpdateModel model)
+    {
+        if (string.IsNullOrEmpty(model.NewPassword))
+            return BadRequest("Le nouveau mot de passe est requis");
+
+        var user = await _context.UserIMONITOR.FindAsync(id);
+        if (user == null)
+            return NotFound($"Aucun utilisateur trouvé avec l'ID {id}");
+
+        // Dans une application réelle, vous devriez hasher le mot de passe
+        // Exemple: user.PasswordHash = _passwordHasher.HashPassword(user, model.NewPassword);
+        user.Password = model.NewPassword;
+
+        await _context.SaveChangesAsync();
+        return Ok(new { message = "Mot de passe mis à jour avec succès" });
+    }
 
 }

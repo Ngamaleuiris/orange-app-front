@@ -143,7 +143,7 @@ const RegisterPage = () => {
               className="w-full py-3 text-white font-bold text-lg rounded-full bg-orange-500 hover:bg-orange-600 transition-transform transform hover:scale-105 disabled:opacity-50"
               disabled={loading || success}
             >
-              {loading ? "Inscription en cours..." : "S'INSCRIRE"}
+              {loading ? "Inscription en cours..." : "SIGN IN"}
             </button>
           </form>
 

@@ -30,7 +30,7 @@ namespace AccessTransmitAPI.Controllers
         public async Task<IActionResult> UploadExcel(IFormFile file)
         {
             if (file == null || file.Length == 0)
-                return BadRequest("Aucun fichier n’a été uploadé.");
+                return BadRequest("Aucun fichier n'a été uploadé.");
 
             if (!Path.GetExtension(file.FileName).Equals(".xlsx", StringComparison.OrdinalIgnoreCase))
                 return BadRequest("Format invalide. Veuillez envoyer un fichier .xlsx");
@@ -44,7 +44,7 @@ namespace AccessTransmitAPI.Controllers
                 var users = _excelService.ParseNFMPExcelToUsers(stream);
 
                 if (users == null || users.Count == 0)
-                    return BadRequest("Aucun utilisateur n’a été détecté dans le fichier. Vérifiez les en-têtes de colonnes.");
+                    return BadRequest("Aucun utilisateur n'a été détecté dans le fichier. Vérifiez les en-têtes de colonnes.");
 
                 _context.UserNFMP.AddRange(users);
                 await _context.SaveChangesAsync();
@@ -138,6 +138,24 @@ namespace AccessTransmitAPI.Controllers
             await _context.SaveChangesAsync();
 
             return Ok(new { message = "Utilisateur supprimé avec succès" });
+        }
+
+        // PUT: api/UserNFMPImport/{id}/password (Modifier le mot de passe d'un utilisateur)
+        [HttpPut("{id}/password")]
+        public async Task<IActionResult> UpdatePassword(int id, [FromBody] PasswordUpdateModel model)
+        {
+            if (string.IsNullOrEmpty(model.NewPassword))
+                return BadRequest("Le nouveau mot de passe est requis");
+
+            var user = await _context.UserNFMP.FindAsync(id);
+            if (user == null)
+                return NotFound($"Aucun utilisateur trouvé avec l'ID {id}");
+
+            // Dans une application réelle, vous devriez hasher le mot de passe
+            user.Password = model.NewPassword;
+
+            await _context.SaveChangesAsync();
+            return Ok(new { message = "Mot de passe mis à jour avec succès" });
         }
     }
 }

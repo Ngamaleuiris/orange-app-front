@@ -97,7 +97,8 @@ namespace AccessTransmitAPI.Services
                     OSSRequestTimeoutSeconds = worksheet.Cells[row, headerMap["OSS Request Timeout (seconds)"]].Text, 
                     ValidClientIPAddress = worksheet.Cells[row, headerMap["Valid Client IP address"]].Text, 
                     EnableIPAddressValidation = worksheet.Cells[row, headerMap["Enable IP Address validation"]].Text, 
-                    InactiveDays = worksheet.Cells[row, headerMap["Inactive Days"]].Text, 
+                    InactiveDays = worksheet.Cells[row, headerMap["Inactive Days"]].Text,
+                    Password = string.Empty
                 };
 
                 users.Add(user);
@@ -136,6 +137,7 @@ namespace AccessTransmitAPI.Services
                     Language = worksheet.Cells[row, headerMap["Language"]].Text,
                     LdapServerName = worksheet.Cells[row, headerMap["LDAP Server Name"]].Text,
                     LdapPath = worksheet.Cells[row, headerMap["LDAP Path"]].Text,
+                    Password = string.Empty
                 };
                 users.Add(user);
             }
@@ -156,7 +158,7 @@ namespace AccessTransmitAPI.Services
             {
                 var header = worksheet.Cells[1, col].Text.Trim();
                 if (!string.IsNullOrEmpty(header))
-                headerMap[header] = col;
+                    headerMap[header] = col;
             }
 
             var users = new List<UserIMONITOR>();
@@ -166,7 +168,8 @@ namespace AccessTransmitAPI.Services
                 {
                     IMONITORUserName = worksheet.Cells[row, headerMap["Name"]].Text,
                     imonitorId = worksheet.Cells[row, headerMap["ID"]].Text,
-                    Type = worksheet.Cells[row, headerMap["Type"]].Text
+                    Type = worksheet.Cells[row, headerMap["Type"]].Text,
+                    Password = string.Empty
                 };
                 users.Add(user);
             }

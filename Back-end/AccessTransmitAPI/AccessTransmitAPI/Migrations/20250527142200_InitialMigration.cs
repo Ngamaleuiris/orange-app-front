@@ -26,6 +26,9 @@ namespace AccessTransmitAPI.Migrations
                     imonitorId = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     Type = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    IsSuspended = table.Column<bool>(type: "tinyint(1)", nullable: false),
+                    Password = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4")
                 },
                 constraints: table =>
@@ -75,7 +78,8 @@ namespace AccessTransmitAPI.Migrations
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     CreatedOn = table.Column<DateTime>(type: "datetime(6)", nullable: true),
                     LastLogin = table.Column<DateTime>(type: "datetime(6)", nullable: true),
-                    IsSuspended = table.Column<bool>(type: "tinyint(1)", nullable: true)
+                    IsSuspended = table.Column<bool>(type: "tinyint(1)", nullable: true),
+                    Enabled = table.Column<bool>(type: "tinyint(1)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -89,47 +93,52 @@ namespace AccessTransmitAPI.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    NFMPUserName = table.Column<string>(type: "longtext", nullable: false)
+                    NFMPUserName = table.Column<string>(type: "longtext", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    Description = table.Column<string>(type: "longtext", nullable: false)
+                    Description = table.Column<string>(type: "longtext", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    UserGroup = table.Column<string>(type: "longtext", nullable: false)
+                    UserGroup = table.Column<string>(type: "longtext", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    UserState = table.Column<string>(type: "longtext", nullable: false)
+                    UserState = table.Column<string>(type: "longtext", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    RemoteUser = table.Column<string>(type: "longtext", nullable: false)
+                    RemoteUser = table.Column<string>(type: "longtext", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    CreationTime = table.Column<string>(type: "longtext", nullable: false)
+                    CreationTime = table.Column<string>(type: "longtext", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    LastLogin = table.Column<string>(type: "longtext", nullable: false)
+                    LastLogin = table.Column<string>(type: "longtext", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    EmailAddress = table.Column<string>(type: "longtext", nullable: false)
+                    EmailAddress = table.Column<string>(type: "longtext", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    ScopeOfCommandProfileID = table.Column<string>(type: "longtext", nullable: false)
+                    ScopeOfCommandProfileID = table.Column<string>(type: "longtext", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    ScopeOfCommandProfileName = table.Column<string>(type: "longtext", nullable: false)
+                    ScopeOfCommandProfileName = table.Column<string>(type: "longtext", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    SpanOfControlProfileID = table.Column<string>(type: "longtext", nullable: false)
+                    SpanOfControlProfileID = table.Column<string>(type: "longtext", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    SpanOfControlProfileName = table.Column<string>(type: "longtext", nullable: false)
+                    SpanOfControlProfileName = table.Column<string>(type: "longtext", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    ForceUserPasswordChange = table.Column<string>(type: "longtext", nullable: false)
+                    ForceUserPasswordChange = table.Column<string>(type: "longtext", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    MaxUserOperatorPositionsAllowed = table.Column<string>(type: "longtext", nullable: false)
+                    MaxUserOperatorPositionsAllowed = table.Column<string>(type: "longtext", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    MaxOSSSessionsAllowed = table.Column<string>(type: "longtext", nullable: false)
+                    MaxOSSSessionsAllowed = table.Column<string>(type: "longtext", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    PublicAlarmFilterForOSS = table.Column<string>(type: "longtext", nullable: false)
+                    PublicAlarmFilterForOSS = table.Column<string>(type: "longtext", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    OSSRequestPriority = table.Column<string>(type: "longtext", nullable: false)
+                    OSSRequestPriority = table.Column<string>(type: "longtext", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    OSSRequestTimeoutSeconds = table.Column<string>(type: "longtext", nullable: false)
+                    OSSRequestTimeoutSeconds = table.Column<string>(type: "longtext", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    ValidClientIPAddress = table.Column<string>(type: "longtext", nullable: false)
+                    ValidClientIPAddress = table.Column<string>(type: "longtext", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    EnableIPAddressValidation = table.Column<string>(type: "longtext", nullable: false)
+                    EnableIPAddressValidation = table.Column<string>(type: "longtext", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    InactiveDays = table.Column<string>(type: "longtext", nullable: false)
+                    InactiveDays = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Type = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    IsSuspended = table.Column<bool>(type: "tinyint(1)", nullable: false),
+                    Password = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4")
                 },
                 constraints: table =>
@@ -139,7 +148,7 @@ namespace AccessTransmitAPI.Migrations
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
-                name: "UserNOMAD",
+                name: "usernomad",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -161,11 +170,14 @@ namespace AccessTransmitAPI.Migrations
                     LdapServerName = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     LdapPath = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    IsSuspended = table.Column<bool>(type: "tinyint(1)", nullable: false),
+                    Password = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4")
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_UserNOMAD", x => x.Id);
+                    table.PrimaryKey("PK_usernomad", x => x.Id);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
@@ -223,7 +235,7 @@ namespace AccessTransmitAPI.Migrations
                 name: "usernfmp");
 
             migrationBuilder.DropTable(
-                name: "UserNOMAD");
+                name: "usernomad");
 
             migrationBuilder.DropTable(
                 name: "Users");

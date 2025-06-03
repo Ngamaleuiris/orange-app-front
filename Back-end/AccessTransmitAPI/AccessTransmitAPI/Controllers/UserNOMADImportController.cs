@@ -108,6 +108,23 @@ namespace AccessTransmitAPI.Controllers
             await _context.SaveChangesAsync();
             return Ok(new { message = "Utilisateur supprimé avec succès" });
         }
+
+        // PUT: api/UserNOMADImport/{id}/password (Modifier le mot de passe d'un utilisateur)
+        [HttpPut("{id}/password")]
+        public async Task<IActionResult> UpdatePassword(int id, [FromBody] PasswordUpdateModel model)
+        {
+            if (string.IsNullOrEmpty(model.NewPassword))
+                return BadRequest("Le nouveau mot de passe est requis");
+
+            var user = await _context.UserNOMAD.FindAsync(id);
+            if (user == null) return NotFound($"Utilisateur avec ID {id} non trouvé.");
+
+            // Dans une application réelle, vous devriez hasher le mot de passe
+            user.Password = model.NewPassword;
+
+            await _context.SaveChangesAsync();
+            return Ok(new { message = "Mot de passe mis à jour avec succès" });
+        }
     }
 }
      

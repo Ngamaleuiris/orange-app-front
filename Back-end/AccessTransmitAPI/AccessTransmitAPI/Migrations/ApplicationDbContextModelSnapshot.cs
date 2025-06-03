@@ -91,6 +91,13 @@ namespace AccessTransmitAPI.Migrations
                         .IsRequired()
                         .HasColumnType("longtext");
 
+                    b.Property<bool>("IsSuspended")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<string>("Password")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
                     b.Property<string>("Type")
                         .IsRequired()
                         .HasColumnType("longtext");
@@ -133,6 +140,9 @@ namespace AccessTransmitAPI.Migrations
 
                     b.Property<string>("EmailAddress")
                         .HasColumnType("longtext");
+
+                    b.Property<bool>("Enabled")
+                        .HasColumnType("tinyint(1)");
 
                     b.Property<string>("FullName")
                         .HasColumnType("longtext");
@@ -185,87 +195,76 @@ namespace AccessTransmitAPI.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("CreationTime")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<string>("Description")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<string>("EmailAddress")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<string>("EnableIPAddressValidation")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<string>("ForceUserPasswordChange")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<string>("InactiveDays")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
+                    b.Property<bool>("IsSuspended")
+                        .HasColumnType("tinyint(1)");
+
                     b.Property<string>("LastLogin")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<string>("MaxOSSSessionsAllowed")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<string>("MaxUserOperatorPositionsAllowed")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<string>("NFMPUserName")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<string>("OSSRequestPriority")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<string>("OSSRequestTimeoutSeconds")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Password")
                         .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<string>("PublicAlarmFilterForOSS")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<string>("RemoteUser")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<string>("ScopeOfCommandProfileID")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<string>("ScopeOfCommandProfileName")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<string>("SpanOfControlProfileID")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<string>("SpanOfControlProfileName")
-                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Type")
                         .HasColumnType("longtext");
 
                     b.Property<string>("UserGroup")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<string>("UserState")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<string>("ValidClientIPAddress")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.HasKey("Id");
@@ -287,6 +286,9 @@ namespace AccessTransmitAPI.Migrations
                         .IsRequired()
                         .HasColumnType("longtext");
 
+                    b.Property<bool>("IsSuspended")
+                        .HasColumnType("tinyint(1)");
+
                     b.Property<string>("Language")
                         .IsRequired()
                         .HasColumnType("longtext");
@@ -307,6 +309,10 @@ namespace AccessTransmitAPI.Migrations
                         .IsRequired()
                         .HasColumnType("longtext");
 
+                    b.Property<string>("Password")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
                     b.Property<string>("Profiles")
                         .IsRequired()
                         .HasColumnType("longtext");
@@ -317,7 +323,7 @@ namespace AccessTransmitAPI.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("UserNOMAD");
+                    b.ToTable("usernomad");
                 });
 #pragma warning restore 612, 618
         }

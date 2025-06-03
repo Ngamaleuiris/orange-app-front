@@ -16,7 +16,7 @@ namespace AccessTransmitAPI.Controllers
             _context = context;
         }
 
-        [HttpGet]
+        [HttpGet] 
         public async Task<ActionResult<IEnumerable<UserIMONITOR>>> GetUsers()
         {
             return await _context.UserIMONITOR.ToListAsync();
@@ -30,7 +30,7 @@ namespace AccessTransmitAPI.Controllers
             return user;
         }
 
-        [HttpPost]
+        [HttpPost] 
         public async Task<ActionResult<UserIMONITOR>> CreateUser(UserIMONITOR user)
         {
             _context.UserIMONITOR.Add(user);

@@ -31,5 +31,6 @@ namespace AccessTransmitAPI.Models
         public string? InactiveDays { get; set; } = string.Empty;
         public string? Type { get; set; } = string.Empty;
         public bool IsSuspended { get; set; } = false;
+        public string Password { get; set; } = string.Empty;
     }
 }

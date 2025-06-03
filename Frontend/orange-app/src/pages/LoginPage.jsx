@@ -120,7 +120,7 @@ const LoginPage = () => {
               className="w-full py-3 text-white font-bold text-lg rounded-full bg-orange-500 hover:bg-orange-600 transition-transform transform hover:scale-105 disabled:opacity-50"
               disabled={loading}
             >
-              {loading ? "Connexion en cours..." : "SE CONNECTER"}
+              {loading ? "Connexion en cours..." : "LOG IN"}
             </button>
           </form>
 

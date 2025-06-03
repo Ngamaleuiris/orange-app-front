@@ -7729,11 +7729,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\irisn\\Desktop\\Projet\\Back-end\\AccessTransmitAPI\\AccessTransmitAPI\\AccessTransmitAPI.csproj",
+      "projectUniqueName": "C:\\Users\\irisn\\Downloads\\projet\\orange-app-front\\Back-end\\AccessTransmitAPI\\AccessTransmitAPI\\AccessTransmitAPI.csproj",
       "projectName": "AccessTransmitAPI",
-      "projectPath": "C:\\Users\\irisn\\Desktop\\Projet\\Back-end\\AccessTransmitAPI\\AccessTransmitAPI\\AccessTransmitAPI.csproj",
+      "projectPath": "C:\\Users\\irisn\\Downloads\\projet\\orange-app-front\\Back-end\\AccessTransmitAPI\\AccessTransmitAPI\\AccessTransmitAPI.csproj",
       "packagesPath": "C:\\Users\\irisn\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\irisn\\Desktop\\Projet\\Back-end\\AccessTransmitAPI\\AccessTransmitAPI\\obj\\",
+      "outputPath": "C:\\Users\\irisn\\Downloads\\projet\\orange-app-front\\Back-end\\AccessTransmitAPI\\AccessTransmitAPI\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"

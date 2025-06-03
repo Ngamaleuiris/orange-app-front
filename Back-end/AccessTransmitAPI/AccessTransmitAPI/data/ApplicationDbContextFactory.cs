@@ -10,7 +10,7 @@ namespace AccessTransmitAPI.Data
         {
             var optionsBuilder = new DbContextOptionsBuilder<ApplicationDbContext>();
             optionsBuilder.UseMySql(
-                "server=localhost;database=AccessTransmitDb;user=root;password=", 
+                "server=localhost;database=accesstransmitDb;user=root;password=", 
                 new MySqlServerVersion(new Version(8, 0, 21))
             );
 
